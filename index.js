@@ -10,7 +10,8 @@ app.use(bodyParser.json());
 // MongoDB connection
 async function connectToMongoDB() {
     try {
-        await mongoose.connect(process.env.MONGO_URL || 'mongodb+srv://gandhambalaraju18:Balaraju%4018@cluster0.zresrux.mongodb.net/balaraju', {
+        await mongoose.connect(process.env.MONGO_URL ||
+            'mongodb+srv://gandhambalaraju18:Balaraju%4018@cluster0.zresrux.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"/balaraju', {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
@@ -58,7 +59,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 app.listen(PORT, async () => {
     await connectToMongoDB();
     console.log(`Server running at PORT ${PORT}`);
