@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 async function connectToMongoDB() {
     try {
         await mongoose.connect(process.env.MONGO_URL ||
-            'mongodb+srv://gandhambalaraju18:Balaraju%4018@cluster0.zresrux.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"/balaraju', {
+            'mongodb+srv://gandhambalaraju18:Balaraju%4018@cluster0.zresrux.mongodb.net/balaraju?retryWrites=true&w=majority', {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
