@@ -8,13 +8,17 @@ const app = express();
 app.use(bodyParser.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URL || 'mongodb+srv://gandhambalaraju18:Balaraju%4018@cluster0.zresrux.mongodb.net/balaraju')
-    .then(() => {
+async function connectToMongoDB() {
+    try {
+        await mongoose.connect(process.env.MONGO_URL || 'mongodb+srv://gandhambalaraju18:Balaraju%4018@cluster0.zresrux.mongodb.net/balaraju', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
         console.log('Connected to MongoDB');
-    })
-    .catch((err) => {
+    } catch (err) {
         console.error('Error while connecting to MongoDB:', err);
-    });
+    }
+}
 
 // Define User model
 const User = mongoose.model('User', {
@@ -27,27 +31,24 @@ app.get('/', (req, res) => {
     res.send('Hello World');
 });
 
-app.post('/users', (req, res) => {
-    const { name, email } = req.body;
-    const user = new User({ name, email });
-
-    user.save()
-        .then(() => {
-            res.status(201).send('User created successfully');
-        })
-        .catch((err) => {
-            res.status(400).send('Error creating user:', err);
-        });
+app.post('/users', async (req, res) => {
+    try {
+        const { name, email } = req.body;
+        const user = new User({ name, email });
+        await user.save();
+        res.status(201).send('User created successfully');
+    } catch (err) {
+        res.status(400).send('Error creating user:', err);
+    }
 });
 
-app.get('/users', (req, res) => {
-    User.find()
-        .then((users) => {
-            res.send(users);
-        })
-        .catch((err) => {
-            res.status(500).send('Error fetching users:', err);
-        });
+app.get('/users', async (req, res) => {
+    try {
+        const users = await User.find();
+        res.send(users);
+    } catch (err) {
+        res.status(500).send('Error fetching users:', err);
+    }
 });
 
 // Error handling middleware
@@ -57,7 +58,8 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 3002;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, async () => {
+    await connectToMongoDB();
     console.log(`Server running at PORT ${PORT}`);
 });
