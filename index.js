@@ -46,6 +46,7 @@ app.get('/', (req, res) => {
 
 app.post('/users', async (req, res) => {
     try {
+        await connectToMongoDB();
         const { name, email } = req.body;
         const user = new User({ name, email });
         await user.save();
