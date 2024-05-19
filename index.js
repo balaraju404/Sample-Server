@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 
 // MongoDB connection
 async function connectToMongoDB(retries = 5) {
-    const mongoUri = process.env.MONGO_URL || 'your-fallback-connection-string';
+    const mongoUri = process.env.MONGO_URL || 'mongodb+srv://gandhambalaraju18:Balaraju%4018@cluster0.zresrux.mongodb.net/balaraju';
     while (retries) {
         try {
             await mongoose.connect(mongoUri, {
