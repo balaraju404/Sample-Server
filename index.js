@@ -8,18 +8,15 @@ const app = express();
 app.use(bodyParser.json());
 
 // MongoDB connection
-async function connectToMongoDB() {
-    const mongoUri = process.env.MONGO_URL || 'mongodb+srv://gandhambalaraju18:Balaraju%4018@cluster0.zresrux.mongodb.net/balaraju';
-    try {
-        await mongoose.connect(mongoUri, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log('Connected to MongoDB');
-    } catch (err) {
-        console.error('Error while connecting to MongoDB:', err);
-    }
-}
+const mongoUri = process.env.MONGO_URL || 'mongodb+srv://gandhambalaraju18:Balaraju%4018@cluster0.zresrux.mongodb.net/balaraju';
+mongoose.connect(mongoUri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}).then(() => {
+    console.log('Connected to MongoDB');
+}).catch(err => {
+    console.error('Error while connecting to MongoDB:', err);
+});
 
 // Define User model
 const User = mongoose.model('User', {
@@ -34,7 +31,6 @@ app.get('/', (req, res) => {
 
 app.post('/users', async (req, res) => {
     try {
-        // await connectToMongoDB();
         const { name, email } = req.body;
         const user = new User({ name, email });
         await user.save();
@@ -46,9 +42,8 @@ app.post('/users', async (req, res) => {
 
 app.get('/users', async (req, res) => {
     try {
-        // await connectToMongoDB();
-        const users = await User.find();
-        res.send(users);
+        const users = await User.find().lean(); // Use lean() for faster query execution
+        res.json(users);
     } catch (err) {
         res.status(500).send('Error fetching users: ' + err.message);
     }
@@ -62,7 +57,6 @@ app.use((err, req, res, next) => {
 
 // Start server
 const PORT = process.env.PORT || 3002;
-app.listen(PORT, async () => {
-    await connectToMongoDB();
+app.listen(PORT, () => {
     console.log(`Server running at PORT ${PORT}`);
 });
