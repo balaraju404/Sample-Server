@@ -8,28 +8,16 @@ const app = express();
 app.use(bodyParser.json());
 
 // MongoDB connection
-async function connectToMongoDB(retries = 5) {
+async function connectToMongoDB() {
     const mongoUri = process.env.MONGO_URL || 'mongodb+srv://gandhambalaraju18:Balaraju%4018@cluster0.zresrux.mongodb.net/balaraju';
-    while (retries) {
-        try {
-            await mongoose.connect(mongoUri, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
-            });
-            console.log('Connected to MongoDB');
-            break;
-        } catch (err) {
-            console.error('Error while connecting to MongoDB:', err);
-            retries -= 1;
-            console.log(`Retries left: ${retries}`);
-            if (retries === 0) {
-                console.error('Could not connect to MongoDB. Exiting...');
-                process.exit(1);
-            }
-            // Wait 5 seconds before retrying
-            await new Promise(res => setTimeout(res, 5000));
-        }
+    try {
+        await mongoose.connect(mongoUri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log('Connected to MongoDB');
+    } catch (err) {
+        console.error('Error while connecting to MongoDB:', err);
     }
 }
 
@@ -46,7 +34,7 @@ app.get('/', (req, res) => {
 
 app.post('/users', async (req, res) => {
     try {
-        await connectToMongoDB();
+        // await connectToMongoDB();
         const { name, email } = req.body;
         const user = new User({ name, email });
         await user.save();
@@ -58,9 +46,9 @@ app.post('/users', async (req, res) => {
 
 app.get('/users', async (req, res) => {
     try {
+        // await connectToMongoDB();
         const users = await User.find();
-        // res.send(users);
-        res.render('index', { users });
+        res.send(users);
     } catch (err) {
         res.status(500).send('Error fetching users: ' + err.message);
     }
