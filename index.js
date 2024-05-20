@@ -59,7 +59,8 @@ app.post('/users', async (req, res) => {
 app.get('/', async (req, res) => {
     try {
         const users = await User.find();
-        res.send(users);
+        // res.send(users);
+        res.render('index', { users });
     } catch (err) {
         res.status(500).send('Error fetching users: ' + err.message);
     }
