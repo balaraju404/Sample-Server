@@ -28,9 +28,9 @@ const User = mongoose.model('User', {
 });
 
 // Routes
-app.get('/', (req, res) => {
-    res.send('Hello World');
-});
+// app.get('/', (req, res) => {
+//     res.send('Hello World');
+// });
 
 app.post('/users', async (req, res) => {
     try {
@@ -43,7 +43,7 @@ app.post('/users', async (req, res) => {
     }
 });
 
-app.get('/users', async (req, res) => {
+app.get('/', async (req, res) => {
     try {
         const users = await User.find();
         res.send(users);
